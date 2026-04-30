@@ -10,7 +10,7 @@ def create_silver_pipeline(config):
     Dynamically create silver layer datasets based on metadata configuration.
     Supports column mappings, transformations, and Auto CDC.
     """
-    # Extract configuration
+    # Extracts configuration
     source_table = config["source_bronze_table"]
     target_table = config["target_silver_table"]
     staging_name = config["staging_table_name"]
@@ -22,7 +22,7 @@ def create_silver_pipeline(config):
     column_mappings = json.loads(config["column_mappings"]) if config["column_mappings"] else {}
     transformations = json.loads(config["transformations"]) if config["transformations"] else {}
     
-    # Create staging table with transformations
+    # Create staging table with transformations--
     @dp.table(
         name=staging_name,
         comment=f"Staging table for {target_table}"
