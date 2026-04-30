@@ -20,7 +20,7 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.DEV_DEPLOYMENT_TARGET_URL }}
       DATABRICKS_TOKEN: ${{ secrets.DEV_DEPLOYMENT_TARGET_TOKEN }}
       # FIX: Standard Git Folder path starts with /Repos/
-      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_warehouse"
+      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_Data_warehouse"
 
     steps:
       - name: Checkout repository
@@ -42,7 +42,7 @@ jobs:
       DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
       DATABRICKS_TOKEN: ${{ secrets.PROD_DEPLOYMENT_TARGET_TOKEN }}
       # FIX: Ensure this path exists in your Prod environment
-      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_warehouse"
+      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
 
     steps:
       - name: Checkout repository
