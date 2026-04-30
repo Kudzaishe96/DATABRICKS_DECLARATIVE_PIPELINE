@@ -1,0 +1,56 @@
+name: main
+
+on:
+  push:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+
+# Global env to suppress Node warnings and set defaults
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # --- DEVELOPMENT DEPLOYMENT ---
+  deploy-dev:
+    runs-on: ubuntu-latest
+    environment: development
+    env:
+      DATABRICKS_HOST: ${{ secrets.DEV_DEPLOYMENT_TARGET_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.DEV_DEPLOYMENT_TARGET_TOKEN }}
+      # FIX: Standard Git Folder path starts with /Repos/
+      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_warehouse"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main # Pinning to a stable version
+
+      - name: Update Databricks Repo (Dev)
+        run: |
+          databricks repos update "${{ env.REPO_PATH }}" --branch main
+
+  # --- PRODUCTION DEPLOYMENT ---
+  deploy-prod:
+    runs-on: ubuntu-latest
+    needs: deploy-dev
+    environment: production
+    env:
+      DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.PROD_DEPLOYMENT_TARGET_TOKEN }}
+      # FIX: Ensure this path exists in your Prod environment
+      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_warehouse"
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Update Databricks Repo (Prod)
+        run: |
+          databricks repos update "${{ env.REPO_PATH }}" --branch main
