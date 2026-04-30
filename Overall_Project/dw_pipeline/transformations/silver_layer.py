@@ -7,6 +7,7 @@ silver_configs = spark.table("ctrl_dev.metadata.silver_config").filter("is_activ
 
 def create_silver_pipeline(config):
     """
+    foo
     Dynamically create silver layer datasets based on metadata configuration.
     Supports column mappings, transformations, and Auto CDC.
     """
