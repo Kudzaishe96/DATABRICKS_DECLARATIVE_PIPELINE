@@ -2,7 +2,7 @@ from pyspark import pipelines as dp
 from pyspark.sql import functions as F
 import json
 
-# Load active silver layer configurations
+# Load active silver layer configurations--
 silver_configs = spark.table("ctrl_dev.metadata.silver_config").filter("is_active = true").collect()
 
 def create_silver_pipeline(config):
