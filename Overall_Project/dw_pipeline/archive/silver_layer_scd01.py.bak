@@ -1,0 +1,61 @@
+from pyspark import pipelines as dp
+from pyspark.sql import functions as F
+from pyspark.sql.functions import trim, when, upper, current_date
+
+@dp.table(
+    name="crm_customer_silver_staging",
+    comment="Transformed CRM customer data"
+)
+@dp.expect_or_drop("valid_id", "cst_id IS NOT NULL")
+@dp.expect("valid_date", "cst_create_date >= '2025-01-01'")
+def silver_crm_customers():
+    df_bronze = spark.readStream.table("data_warehouse_tables.bronze.crm_customer")
+    
+    df_silver = (
+        df_bronze
+        .withColumn("cst_firstname", F.trim(F.col("cst_firstname")))
+        .withColumn("cst_lastname", F.trim(F.col("cst_lastname")))
+        # --- DATE CORRECTION START ---
+        # We trim and then parse the specific M/d/yyyy format
+        .withColumn(
+            "cst_create_date", 
+            F.to_date(F.trim(F.col("cst_create_date")), "M/d/yyyy")
+        )
+        # --- DATE CORRECTION END ---
+        .withColumn(
+            "cst_marital_status",
+            F.when(F.upper(F.trim(F.col("cst_marital_status"))) == "M", "Married")
+            .when(F.upper(F.trim(F.col("cst_marital_status"))) == "S", "Single")
+            .otherwise("Other"),
+        )
+        .withColumn(
+            "cst_gender",
+            F.when(F.upper(F.trim(F.col("cst_gndr"))) == "M", "Male")
+            .when(F.upper(F.trim(F.col("cst_gndr"))) == "F", "Female")
+            .otherwise("Other"),
+        )
+        .withColumn("silver_processed_timestamp", F.current_timestamp())
+    )
+    
+    return df_silver
+
+dp.create_streaming_table(
+    name="data_warehouse_tables.silver.crm_customer",
+    comment="Cleaned and validated customers with CDC upsert capability",
+    table_properties={
+        "quality": "silver",
+        "layer": "silver",
+        "delta.enableChangeDataFeed": "true",
+        "delta.autoOptimize.optimizeWrite": "true",
+        "delta.autoOptimize.autoCompact": "true",
+    },
+)
+
+dp.create_auto_cdc_flow(
+    target="data_warehouse_tables.silver.crm_customer",
+    source="crm_customer_silver_staging",
+    keys=["cst_id"],
+    sequence_by=F.col("silver_processed_timestamp"),
+    stored_as_scd_type=2,
+    except_column_list=[],
+)
