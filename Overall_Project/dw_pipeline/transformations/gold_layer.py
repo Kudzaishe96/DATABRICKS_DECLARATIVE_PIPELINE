@@ -10,7 +10,7 @@ def create_gold_table(config):
     Dynamically create gold layer datasets based on metadata configuration.
     Supports joins, column selections, filters, and data quality checks.
     """
-    # Extract configuration
+    # Extracts configuration
     target_table = config["target_gold_table"]
     table_type = config["table_type"]
     description = config["description"]
