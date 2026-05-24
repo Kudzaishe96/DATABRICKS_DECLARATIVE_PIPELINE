@@ -16,7 +16,7 @@ env:
 
 jobs:
   # STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
-  # This triggers on Pull Requests to catch schema errors BEFORE code hits production
+  # This triggers on Pull Requests to catch schema errors BEFORE code hits production...
   staging-testing:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
