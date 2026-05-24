@@ -15,15 +15,15 @@ env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  # 🧪 STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
+  # STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
   # This triggers on Pull Requests to catch schema errors BEFORE code hits production
   staging-testing:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     environment: staging
     env:
-      DATABRICKS_HOST: ${{ secrets.STAGING_DEPLOYMENT_TARGET_URL }}
-      DATABRICKS_TOKEN: ${{ secrets.STAGING_DEPLOYMENT_TARGET_TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_Data_warehouse"
 
     steps:
@@ -56,8 +56,8 @@ jobs:
     runs-on: ubuntu-latest
     environment: production
     env:
-      DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
-      DATABRICKS_TOKEN: ${{ secrets.PROD_DEPLOYMENT_TARGET_TOKEN }}
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
 
     steps:
