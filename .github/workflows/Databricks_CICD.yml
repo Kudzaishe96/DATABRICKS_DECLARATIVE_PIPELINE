@@ -1,0 +1,73 @@
+name: Databricks CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+    paths-ignore:
+      - '.github/**'
+      - 'README.md'
+
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
+jobs:
+  # 🧪 STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
+  # This triggers on Pull Requests to catch schema errors BEFORE code hits production
+  staging-testing:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    environment: staging
+    env:
+      DATABRICKS_HOST: ${{ secrets.STAGING_DEPLOYMENT_TARGET_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.STAGING_DEPLOYMENT_TARGET_TOKEN }}
+      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_Data_warehouse"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Sync Feature Branch to Staging Workspace
+        run: |
+          # Dynamically grab the PR feature branch name
+          BRANCH_NAME="${{ github.head_ref }}"
+          echo "Syncing Staging workspace Repo to branch: $BRANCH_NAME"
+          
+          databricks repos update "${{ env.REPO_PATH }}" --branch "$BRANCH_NAME"
+
+      - name: Execute Data Quality & Type Validation Tests
+        run: |
+          echo "Executing automated structural type validations..."
+          # This executes your python validation script/notebook inside your staging cluster
+          databricks notebook execute "${{ env.REPO_PATH }}/tests/data_quality_check" \
+            --cluster-id="${{ secrets.STAGING_CLUSTER_ID }}" \
+            --output="./test-results.json"
+
+  # STAGE 2: PRODUCTION DEPLOYMENT
+  # This triggers ONLY after code is safely merged into the main branch
+  deploy-prod:
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment: production
+    env:
+      DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.PROD_DEPLOYMENT_TARGET_TOKEN }}
+      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Set up Databricks CLI
+        uses: databricks/setup-cli@main
+
+      - name: Deploy Stable Code to Production Workspace
+        run: |
+          echo "Promoting synchronized main branch to Production..."
+          databricks repos update "${{ env.REPO_PATH }}" --branch main
