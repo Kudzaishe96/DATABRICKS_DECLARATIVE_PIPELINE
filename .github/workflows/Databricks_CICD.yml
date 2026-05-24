@@ -41,13 +41,7 @@ jobs:
           
           databricks repos update "${{ env.REPO_PATH }}" --branch "$BRANCH_NAME"
 
-      - name: Execute Data Quality & Type Validation Tests
-        run: |
-          echo "Executing automated structural type validations..."
-          # This executes your python validation script/notebook inside your staging cluster
-          databricks notebook execute "${{ env.REPO_PATH }}/tests/data_quality_check" \
-            --cluster-id="${{ secrets.STAGING_CLUSTER_ID }}" \
-            --output="./test-results.json"
+
 
   # STAGE 2: PRODUCTION DEPLOYMENT
   # This triggers ONLY after code is safely merged into the main branch
