@@ -24,7 +24,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_URL }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_Data_warehouse"
+      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
 
     steps:
       - name: Checkout Repository
@@ -58,7 +58,7 @@ jobs:
     env:
       DATABRICKS_HOST: ${{ secrets.DATABRICKS_URL }}
       DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
-      REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
+      REPO_PATH: "/Workspace/Users/kudzaishemanyanya@gmail.com/Databricks_Data_warehouse"
 
     steps:
       - name: Checkout Repository
