@@ -4,7 +4,7 @@ from pyspark.sql.functions import trim, when, upper, current_date
 
 @dp.table(
     name="crm_customer_silver_staging",
-    comment="Transformed CRM customer data"
+    comment="Transformed CRM customer data clm"
 )
 @dp.expect_or_drop("valid_id", "cst_id IS NOT NULL")
 @dp.expect("valid_date", "cst_create_date >= '2025-01-01'")
