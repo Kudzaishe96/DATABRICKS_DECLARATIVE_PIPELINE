@@ -13,7 +13,7 @@ env:
 
 jobs:
   # --- DEVELOPMENT DEPLOYMENT ---
-  deploy-dev:
+  deploying-dev:
     runs-on: ubuntu-latest
     environment: development
     env:
@@ -36,7 +36,7 @@ jobs:
   # --- PRODUCTION DEPLOYMENT ---
   deploy-prod:
     runs-on: ubuntu-latest
-    needs: deploy-dev
+    needs: deploying-dev
     environment: production
     env:
       DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
