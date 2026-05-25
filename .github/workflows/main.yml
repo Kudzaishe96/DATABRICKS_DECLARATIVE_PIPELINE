@@ -17,7 +17,7 @@ env:
 jobs:
   # STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
   # This triggers on Pull Requests to catch schema errors BEFORE code hits production
-  deploy-staging:
+  deploying-staging:
     runs-on: ubuntu-latest
     environment: staging
     env:
