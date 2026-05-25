@@ -39,10 +39,3 @@ jobs:
           echo "Syncing Staging workspace Repo to branch: $BRANCH_NAME"
           
           databricks repos update "${{ env.REPO_PATH }}" --branch "$BRANCH_NAME"
-
-
-
-  rkspace
-        run: |
-          echo "Promoting synchronized main branch to Production..."
-          databricks repos update "${{ env.REPO_PATH }}" --branch main
