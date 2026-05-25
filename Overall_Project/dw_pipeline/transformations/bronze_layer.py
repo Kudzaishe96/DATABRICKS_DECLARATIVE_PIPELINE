@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 configs = spark.table("ctrl_dev.metadata.pipeline_config").filter("is_active = true").collect()
 
 def create_pipeline(row):
-    # Use variable names consistent with your project
+    # Variable names
     T_NAME = row["table_name"]
     S_PATH = row["source_path"]
     S_LOC  = row["schema_location"]
@@ -25,13 +25,15 @@ def create_pipeline(row):
     @dp.expect_or_drop("valid_id",f"{D_QUALITY} IS NOT NULL") 
     def bronze_layer():
         return (
-            spark.readStream.format("cloudFiles") # enable streaming table autoloader
+            spark.readStream.format("cloudFiles")
             .option("cloudFiles.format", FORMAT)
-            .option("cloudFiles.schemaLocation", S_LOC) # IDEMPOTENT: Tracking schemas
+            .option("cloudFiles.schemaLocation", S_LOC)
+            .option("cloudFiles.schemaEvolutionMode", "rescue")  # NEW: Use rescued data column
+            .option("rescuedDataColumn", "_rescued_data")        # NEW: Explicit column name
             .load(S_PATH)
-            # 3. AUDITABLE: Adding lineage and timestamps
             .withColumn("ingest_timestamp", F.current_timestamp())
             .withColumn("source_metadata", F.col("_metadata"))
+            .withColumn("_metadata_time", F.col("_metadata.file_modification_time"))
         )
 
 for row in configs:

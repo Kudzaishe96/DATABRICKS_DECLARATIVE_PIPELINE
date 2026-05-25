@@ -7,7 +7,6 @@ silver_configs = spark.table("ctrl_dev.metadata.silver_config").filter("is_activ
 
 def create_silver_pipeline(config):
     """
-    foo
     Dynamically create silver layer datasets based on metadata configuration.
     Supports column mappings, transformations, and Auto CDC.
     """
@@ -45,9 +44,8 @@ def create_silver_pipeline(config):
         if "birthday" in transformations and "BDATE" in [c.upper() for c in df.columns]:
             df = df.drop("BDATE")
         
-        # Add processing timestamp for CDC sequencing
         df = df.withColumn(sequence_col, F.current_timestamp())
-        
+  
         return df
     
     # Create target streaming table
@@ -68,9 +66,9 @@ def create_silver_pipeline(config):
         target=target_table,
         source=staging_name,
         keys=cdc_keys,
-        sequence_by=sequence_col,
+        sequence_by="_metadata_time",
         stored_as_scd_type=scd_type,
-        except_column_list=[],
+        except_column_list=["_metadata_time","silver_processed_timestamp"]
     )
 
 # Generate silver layer for all active configurations
