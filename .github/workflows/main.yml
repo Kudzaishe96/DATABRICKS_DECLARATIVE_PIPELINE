@@ -1,56 +1,48 @@
-name: main
+name: Databrick PR
 
 on:
   push:
     branches:
       - main
+  pull_request:
+    branches:
+      - main
     paths-ignore:
       - '.github/**'
+      - 'README.md'
 
-# Global env to suppress Node warnings and set defaults
 env:
   FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
 
 jobs:
-  # --- DEVELOPMENT DEPLOYMENT ---
-  deploying-dev:
+  # STAGE 1: STAGING DEPLOYMENT & DATA QUALITY TESTING
+  # This triggers on Pull Requests to catch schema errors BEFORE code hits production
+  deploy-staging:
     runs-on: ubuntu-latest
-    environment: development
+    environment: staging
     env:
-      DATABRICKS_HOST: ${{ secrets.DEV_DEPLOYMENT_TARGET_URL }}
-      DATABRICKS_TOKEN: ${{ secrets.DEV_DEPLOYMENT_TARGET_TOKEN }}
-      # FIX: Standard Git Folder path starts with /Repos/
-      REPO_PATH: "/Workspace/Users/kudzaishemanyanya1@gmail.com/Databricks_Data_warehouse"
-
-    steps:
-      - name: Checkout repository
-        uses: actions/checkout@v4
-
-      - name: Set up Databricks CLI
-        uses: databricks/setup-cli@main # Pinning to a stable version
-
-      - name: Update Databricks Repo (Dev)
-        run: |
-          databricks repos update "${{ env.REPO_PATH }}" --branch main
-
-  # --- PRODUCTION DEPLOYMENT ---
-  deploy-prod:
-    runs-on: ubuntu-latest
-    needs: deploying-dev
-    environment: production
-    env:
-      DATABRICKS_HOST: ${{ secrets.PROD_DEPLOYMENT_TARGET_URL }}
-      DATABRICKS_TOKEN: ${{ secrets.PROD_DEPLOYMENT_TARGET_TOKEN }}
-      # FIX: Ensure this path exists in your Prod environment
+      DATABRICKS_HOST: ${{ secrets.DATABRICKS_URL }}
+      DATABRICKS_TOKEN: ${{ secrets.DATABRICKS_TOKEN }}
       REPO_PATH: "/Workspace/Users/kudziemanyanya@gmail.com/Databricks_Data_warehouse"
 
     steps:
-      - name: Checkout repository
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
       - name: Set up Databricks CLI
         uses: databricks/setup-cli@main
 
-      - name: Update Databricks Repo (Prod)
+      - name: Sync Code to Staging Workspace
         run: |
+          # If it's a PR, sync the feature branch. If it's a merge to main, sync main.
+          BRANCH_NAME="${{ github.head_ref || github.ref_name }}"
+          echo "Syncing Staging workspace Repo to branch: $BRANCH_NAME"
+          
+          databricks repos update "${{ env.REPO_PATH }}" --branch "$BRANCH_NAME"
+
+
+
+  rkspace
+        run: |
+          echo "Promoting synchronized main branch to Production..."
           databricks repos update "${{ env.REPO_PATH }}" --branch main
