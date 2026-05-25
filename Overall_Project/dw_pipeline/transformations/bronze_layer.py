@@ -5,7 +5,7 @@ from pyspark.sql import functions as F
 configs = spark.table("ctrl_dev.metadata.pipeline_config").filter("is_active = true").collect()
 
 def create_pipeline(row):
-    # Variable names
+    # Variable names....
     T_NAME = row["table_name"]
     S_PATH = row["source_path"]
     S_LOC  = row["schema_location"]
