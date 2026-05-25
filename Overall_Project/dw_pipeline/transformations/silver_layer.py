@@ -22,7 +22,7 @@ def create_silver_pipeline(config):
     column_mappings = json.loads(config["column_mappings"]) if config["column_mappings"] else {}
     transformations = json.loads(config["transformations"]) if config["transformations"] else {}
     
-    # Create staging table with transformations----
+    # Create staging table with transformations
     @dp.table(
         name=staging_name,
         comment=f"Staging table for {target_table}"
