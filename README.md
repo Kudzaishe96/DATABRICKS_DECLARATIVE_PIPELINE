@@ -1,6 +1,6 @@
 # SPARK DECLARATIVE PIPELINES WITH DATABRICKS
 
-## ETL Pyspark Declarative pipeline project using Databricks
+## ETL Pyspark Declarative pipeline using Databricks
 
 ## Table Of Contents
 
