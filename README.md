@@ -1,7 +1,6 @@
-# Databricks_Data_warehouse
-Platform Databricks and using meta data
+# SPARK DECLARATIVE PIPELINES WITH DATABRICKS
 
-## ETL project using Data Bricks
+## ETL Pyspark Declarative pipeline project using Databricks
 
 ## Table Of Contents
 
@@ -15,7 +14,7 @@ Platform Databricks and using meta data
 
 ### Project Overview
 
-This project seek to show the extraction of raw data into meaningfull sql views for data analytics 
+implementng spark declarative pieline using Databricks platform for Data extraction ,data cleaning usng the medalion architecture.
 
 
 ### Data Source
@@ -26,6 +25,8 @@ EMR and CMR Data csv files uploaded into databricks wokrkspace
 - Databricks Catalog
 - SQL
 - Python
+- pyspark
+- declarative pipeline
 
 
 ## Medallion Architecture
