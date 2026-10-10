@@ -1,6 +1,6 @@
 # Silver Layer Quick Start Guide
 
-## 🚀 Quick Commands
+##  Quick Commands
 
 ### View Current Configurations
 ```sql
@@ -48,9 +48,9 @@ WHERE staging_table_name = 'YOUR_TABLE_silver_staging';
 
 ---
 
-## 📋 Real Examples
+##  Real Examples
 
-### Example 1: Simple Pass-Through
+### Example 1: Simple Pass Through
 ```sql
 INSERT INTO ctrl_dev.metadata.silver_config 
 VALUES (
@@ -141,22 +141,6 @@ VALUES (
 
 ---
 
-## 📊 Metadata Table Schema
-
- Column | Type | Required | Description |
---------|------|----------|-------------|
- source_bronze_table | STRING | ✅ | Bronze table to read from |
- target_silver_table | STRING | ✅ | Silver table to write to |
- staging_table_name | STRING | ✅ | Staging table name |
- cdc_keys | ARRAY<STRING> | ✅ | Primary keys for CDC |
- scd_type | INT | ✅ | 1 or 2 |
- sequence_by_column | STRING | ✅ | CDC sequence column |
- column_mappings | STRING | ❌ | JSON: `{"old": "new"}` |
- transformations | STRING | ❌ | JSON: `{"col": "expr"}` |
- is_active | BOOLEAN | ✅ | Enable/disable |
-
----
-
 ## ⚡ Workflow
 
 1. **Insert Configuration** (SQL above)
@@ -176,10 +160,8 @@ VALUES (
 
 1. **Use renamed columns** in transformations
    ```json
-   // ❌ Wrong
-   {"column_mappings": {"OLD": "new"}, "transformations": {"x": "OLD * 2"}}
    
-   // ✅ Correct
+
    {"column_mappings": {"OLD": "new"}, "transformations": {"x": "new * 2"}}
    ```
 
@@ -195,7 +177,3 @@ VALUES (
    - After inserting config, run pipeline update to load new table
 
 ---
-
-## 📖 Full Documentation
-
-See `README_SILVER_LAYER.md` for complete documentation.
