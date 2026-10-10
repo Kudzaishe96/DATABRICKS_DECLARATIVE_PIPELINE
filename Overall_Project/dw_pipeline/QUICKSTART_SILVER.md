@@ -141,7 +141,7 @@ VALUES (
 
 ---
 
-## ⚡ Workflow
+##  Workflow
 
 1. **Insert Configuration** (SQL above)
 2. **Run Pipeline**
@@ -156,7 +156,7 @@ VALUES (
 
 ---
 
-## ❗ Important Notes
+## Important Notes
 
 1. **Use renamed columns** in transformations
    ```json
