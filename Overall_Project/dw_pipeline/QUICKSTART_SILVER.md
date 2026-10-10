@@ -1,5 +1,30 @@
 # Silver Layer Quick Start Guide
 
+
+# Step 1: Create the Metadata Table
+
+```sql
+CREATE TABLE IF NOT EXISTS ctrl_dev.metadata.silver_config (
+    config_id BIGINT GENERATED ALWAYS AS IDENTITY,
+    source_bronze_table STRING,
+    target_silver_table STRING,
+    staging_table_name STRING,
+    cdc_keys ARRAY<STRING>,
+    scd_type INT DEFAULT 1,
+    sequence_by_column STRING,
+    column_mappings STRING,
+    transformations STRING,
+    data_quality_checks STRING,
+    is_active BOOLEAN DEFAULT true,
+    layer STRING DEFAULT 'silver',
+    created_date TIMESTAMP DEFAULT current_timestamp(),
+    updated_date TIMESTAMP DEFAULT current_timestamp()
+)
+TBLPROPERTIES(
+    'delta.feature.allowColumnDefaults' = 'supported',
+    'description' = 'Metadata configuration for silver layer transformations'
+);
+
 ##  Quick Commands
 
 ### View Current Configurations
