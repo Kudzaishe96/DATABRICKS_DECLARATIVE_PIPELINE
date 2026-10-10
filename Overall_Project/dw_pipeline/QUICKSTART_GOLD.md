@@ -1,4 +1,4 @@
-# ⚡ Gold Layer Quick Reference
+#  Gold Layer Quick Reference
 
 ## Common Tasks
 
